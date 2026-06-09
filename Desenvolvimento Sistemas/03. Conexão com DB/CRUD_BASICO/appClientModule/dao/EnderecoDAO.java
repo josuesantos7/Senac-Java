@@ -36,7 +36,7 @@ public class EnderecoDAO {
 				endereco.setId(1);
 			}
 			
-			System.out.println("Passou por aqui!! Endereço.");
+			System.out.println("Endereço cadastrado com sucesso!.");
 			
 		} catch (Exception e) {
 			// TODO: handle exception

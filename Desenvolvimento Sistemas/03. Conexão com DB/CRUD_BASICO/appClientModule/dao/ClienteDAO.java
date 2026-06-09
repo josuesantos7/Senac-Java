@@ -5,6 +5,10 @@ import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.management.RuntimeErrorException;
 
 import Connetion.ConectFactory;
 import Model.Cliente;
@@ -29,11 +33,40 @@ public class ClienteDAO {
 				cliente.setId(rs.getInt(1));
 			}
 			
-			System.out.println("Endereço cadastrado com sucesso!");
+			System.out.println("Cliente cadastrado com sucesso!");
 			
 		} catch (Exception e) {
 			// TODO: handle exception
 			throw new RuntimeException("Erro ao cadastrar o cliente", e);
 		}
 	}
+	
+	public List<Cliente> listarTodos() {
+		String sql = "SELECT id_cliente, nome, sexo, dt_nascimento from Cliente";
+		List<Cliente>clientes = new ArrayList<>();
+		
+		try (
+			Connection conn = ConectFactory.getConnection();
+				PreparedStatement stmt = conn.prepareStatement(sql);
+				ResultSet rs = stmt.executeQuery()
+			)
+		
+		{
+			while (rs.next()) {
+				Cliente cliente = new Cliente(
+						rs.getString("nome"),
+						rs.getString("sexo").charAt(0),
+						rs.getDate("dt_nascimento").toLocalDate()
+				);
+				cliente.setId(rs.getInt("id_cliente"));
+				clientes.add(cliente);
+			}
+			
+		} catch (Exception e) {
+			throw new RuntimeException("Erro ao listar clientes", e);
+		}
+		
+		return clientes;
+	}
+	
 }
