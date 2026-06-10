@@ -19,7 +19,8 @@ public class Main {
 			System.out.println("\\n==== MENU ====");
 			System.out.println("1 - Cadastrar Cliente");
 			System.out.println("2 - Listar todos os Clientes");
-			System.out.println("3 - Sair");
+			System.out.println("3 - Editar Cliente");
+			System.out.println("4 - Sair");
 			System.out.print("Opcao: ");
 			opcao = Integer.parseInt(scanner.nextLine());
 			
@@ -93,6 +94,9 @@ public class Main {
 				listarClientes(clientedao);
 				break;
 			case 3:
+				editarCliente(scanner, clientedao);
+				break;
+			case 4:
 				System.out.println("Saindo...");
 				break;
 			default:
@@ -225,6 +229,44 @@ public class Main {
 			System.out.println(c.getId() + "\t" + c.getNome() + "\t" + c.getSexo() + "\t" + c.getDtNascimento());
 		};
 	};
+	
+	public static void editarCliente(Scanner scanner, ClienteDAO clienDao) {
+		System.out.print("\nInforme o Id do cliente: ");
+		int id = Integer.parseInt(scanner.nextLine());
+		
+		Cliente cliente = clienDao.buscarPorId(id);
+		
+		if(cliente == null) {
+			System.out.println("Cliente com ID " + id + "não encontrado");
+			return;
+		}
+		
+		System.out.println("Cliente encontrado: " + cliente.getNome());
+		System.out.println("\nInforme os novos dados:");
+		
+		System.out.println("Nome: ");
+		String nome = scanner.nextLine();
+		
+		System.out.println("Sexo: ");
+		char sexo = scanner.nextLine().toUpperCase().charAt(0);
+		
+		System.out.println("Data de nascimento (dd/mm/aa): ");
+		String dataStr = scanner.nextLine();
+		String[] partes = dataStr.split("/");
+		LocalDate dt_nascimento = LocalDate.of(
+				Integer.parseInt(partes[2]),
+				Integer.parseInt(partes[1]),
+				Integer.parseInt(partes[0])
+				
+		);
+		
+		cliente.setNome(nome);
+		cliente.setSexo(sexo);
+		cliente.setDtNascimento(dt_nascimento);
+		
+		clienDao.atualizar(cliente);
+		
+	}
 	
 	/* (non-Java-doc)
 	 * @see java.lang.Object#Object()
