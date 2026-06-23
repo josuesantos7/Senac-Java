@@ -1,12 +1,10 @@
 package dao;
 
+
 import java.sql.Connection;
-import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
-import java.time.LocalDateTime;
-
 import Connection.ConectFactory;
 import Model.Veiculo;
 
@@ -23,37 +21,8 @@ public class VeiculoDAO {
 			stmt.setObject(3, veiculo.getSaida());
 			
 			stmt.execute();
-			ResultSet rs = stmt.getGeneratedKeys();
 			
 			System.out.println("Veículo cadastrado com sucesso!");
-			
-		} catch (Exception e) {
-			// TODO: handle exception
-			throw new RuntimeException("Erro ao cadastrar o veículo", e);
-		}
-	}
-	
-	public void mostrarHoras(String placa) {
-		String sql = "select placa, entrada, saida from Veiculo where placa = ?";
-		
-		try (
-				Connection conn = ConectFactory.getConnection();
-				PreparedStatement stmt = conn.prepareStatement(sql);
-				) {
-			
-			stmt.setString(1, placa);
-			
-
-			ResultSet rs = stmt.executeQuery();
-			
-			    while (rs.next()) {
-			        Object entrada = rs.getObject("entrada");
-			        Object saida = rs.getObject("saida");
-			
-			        System.out.println("Placa: " + placa);
-			        System.out.println("Entrada: " + entrada);
-			        System.out.println("Saída: " + saida);
-			    }
 			
 		} catch (Exception e) {
 			// TODO: handle exception
@@ -76,10 +45,7 @@ public class VeiculoDAO {
 						rs.getString("placa"),
 						rs.getTimestamp("entrada").toLocalDateTime()
 				);
-				veiculo.setSaida(LocalDateTime.now());
-				//veiculo.setSaida(rs.getTimestamp("saida").toLocalDateTime());
-				
-				System.out.println("a placa é: " + veiculo.getPlaca());
+				System.out.println("a placa digitada foi: " + veiculo.getPlaca());
 				return veiculo ;		
 			}
 		} catch (Exception e) {
@@ -87,5 +53,30 @@ public class VeiculoDAO {
 		}
 		
 		return null;
+	}
+	
+	public void registrarSaida(Veiculo veiculo) {
+
+	    String sql = "UPDATE Veiculo SET saida = ? WHERE placa = ?";
+
+	    try (
+	        Connection conn = ConectFactory.getConnection();
+	        PreparedStatement stmt = conn.prepareStatement(sql);
+	    ) {
+
+	        stmt.setTimestamp(1, java.sql.Timestamp.valueOf(veiculo.getSaida()));
+	        stmt.setString(2, veiculo.getPlaca());
+
+	        int linhas = stmt.executeUpdate();
+
+	        if (linhas > 0) {
+	            System.out.println("Saída registrada com sucesso!");
+	        } else {
+	            System.out.println("Veículo não encontrado.");
+	        }
+
+	    } catch (Exception e) {
+	        throw new RuntimeException("Erro ao registrar saída.", e);
+	    }
 	}
 }

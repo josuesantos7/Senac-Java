@@ -1,4 +1,3 @@
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Scanner;
 
@@ -10,18 +9,21 @@ public class Main {
 		Scanner scanner = new Scanner(System.in);
 		VeiculoDAO veiculodao = new VeiculoDAO();
 		
+		System.out.println();
 		System.out.println("***** Bem vindo ao estacionamento JS *****");
 		int opcao = 0;
 		
 		while (opcao != 3) {
-			System.out.println("\n========= MENU ========");
+			System.out.println("\n========= MENU =========");
 			System.out.println("1 - Emitir ticket Entrada");
 			System.out.println("2 - Validar ticket Saída");
 			System.out.println("3 - finalizar Programa");
+			System.out.println("=========================");
 			
 			opcao = Integer.parseInt(scanner.nextLine());
 			
 			LocalDateTime tempoAtual;
+			
 			switch (opcao) {
 			case 1:
 				System.out.println("Informe a placa do seu veículo: ");
@@ -37,18 +39,26 @@ public class Main {
 			case 2:
 				System.out.println("Informe a placa do seu veículo: ");
 				String placaSaida = scanner.nextLine();
-				System.out.println(placaSaida);
-				
-				tempoAtual= LocalDateTime.now();
-				
-				// veiculodao.mostrarHoras(placaSaida);
-				veiculodao.buscarPorPlaca(placaSaida);
-				
-				break;
-				
-				
+				System.out.println("Placa digitada: " + placaSaida);
 
+				Veiculo veiculo1 = veiculodao.buscarPorPlaca(placaSaida);
+
+				if (veiculo1 != null) {
+				    veiculo1.setSaida(LocalDateTime.now());
+				    
+				    // Envia o objeto atualizado para o DAO salvar no banco de dados
+				    veiculodao.registrarSaida(veiculo1);
+				    System.out.println("Saída registrada com sucesso para o veículo de placa: " + placaSaida);
+				} else {
+				    System.out.println("Veículo não encontrado.");
+				}
+				break;
+			case 3:
+				System.out.println("Programa finalizado com Sucesso !!");
+				break;
+			
 			default:
+				System.out.println("Opção Inválida!");
 				break;
 			}
 		}
