@@ -18,7 +18,7 @@ public class Main {
 			System.out.println("1 - Emitir ticket Entrada");
 			System.out.println("2 - Validar ticket Saída");
 			System.out.println("3 - finalizar Programa");
-			System.out.println("=========================");
+			System.out.println("=========================\n");
 			
 			opcao = Integer.parseInt(scanner.nextLine());
 			
@@ -48,13 +48,26 @@ public class Main {
 				    
 				    // Envia o objeto atualizado para o DAO salvar no banco de dados
 				    veiculodao.registrarSaida(veiculo1);
-				    System.out.println("Saída registrada com sucesso para o veículo de placa: " + placaSaida);
+				   // veiculodao.returnarPermanencia(veiculo1.getSaida());
+				    
 				} else {
 				    System.out.println("Veículo não encontrado.");
 				}
 				break;
 			case 3:
 				System.out.println("Programa finalizado com Sucesso !!");
+				System.out.println("Informe a placa do seu veículo: ");
+				String placaSaidaa = scanner.nextLine();
+				System.out.println("Placa digitada: " + placaSaidaa);
+				
+				Veiculo veiculo2 = veiculodao.retornarPermanencia(placaSaidaa);
+				/*
+				System.out.println(veiculo2.getSaida());
+				
+				System.out.println(veiculo2.getEntrada());
+				*/
+				
+		
 				break;
 			
 			default:

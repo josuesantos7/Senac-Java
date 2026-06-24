@@ -5,6 +5,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.time.Duration;
+import java.time.LocalDateTime;
+
 import Connection.ConectFactory;
 import Model.Veiculo;
 
@@ -45,7 +48,6 @@ public class VeiculoDAO {
 						rs.getString("placa"),
 						rs.getTimestamp("entrada").toLocalDateTime()
 				);
-				System.out.println("a placa digitada foi: " + veiculo.getPlaca());
 				return veiculo ;		
 			}
 		} catch (Exception e) {
@@ -66,7 +68,7 @@ public class VeiculoDAO {
 
 	        stmt.setTimestamp(1, java.sql.Timestamp.valueOf(veiculo.getSaida()));
 	        stmt.setString(2, veiculo.getPlaca());
-
+	        
 	        int linhas = stmt.executeUpdate();
 
 	        if (linhas > 0) {
@@ -78,5 +80,47 @@ public class VeiculoDAO {
 	    } catch (Exception e) {
 	        throw new RuntimeException("Erro ao registrar saída.", e);
 	    }
+	}
+	
+	public Veiculo retornarPermanencia(String placa) {
+		String sql = "SELECT PLACA, entrada, saida from Veiculo WHERE PLACA = ?";
+		
+		try (
+				Connection conn = ConectFactory.getConnection();
+				PreparedStatement stmt = conn.prepareStatement(sql);
+				){
+			stmt.setString(1, placa);
+			ResultSet rs = stmt.executeQuery();
+			
+			if(rs.next()) {
+				Veiculo veiculo = new Veiculo(
+						rs.getString("placa"),
+						rs.getTimestamp("entrada").toLocalDateTime()
+				);
+				
+				veiculo.setSaida(rs.getTimestamp("saida").toLocalDateTime());
+				
+				System.out.println(veiculo.getEntrada());
+				System.out.println(veiculo.getSaida());
+				
+				// Calcular intervalo de hora!
+				LocalDateTime dataInicio = rs.getTimestamp("entrada").toLocalDateTime();
+                LocalDateTime dataFim = rs.getTimestamp("saida").toLocalDateTime();
+				
+                Duration intervalo = Duration.between(dataInicio, dataFim);
+                long horas = intervalo.toHours();
+                long minutos = intervalo.toMinutes() % 60;
+                
+                System.out.println("Intervalo: " + horas + " horas e " + minutos + " minutos.");
+
+                
+				return veiculo ;
+						
+			}
+		} catch (Exception e) {
+			throw new RuntimeException("Erro ao buscar veiculo", e);
+		}
+	
+		return null;
 	}
 }
