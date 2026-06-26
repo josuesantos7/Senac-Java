@@ -14,11 +14,12 @@ public class Main {
 		int opcao = 0;
 		
 		while (opcao != 3) {
-			System.out.println("\n========= MENU =========");
-			System.out.println("1 - Emitir ticket Entrada");
-			System.out.println("2 - Validar ticket Saída");
-			System.out.println("3 - finalizar Programa");
-			System.out.println("=========================\n");
+			System.out.println("\n=============== MENU ====================");
+			System.out.println("==  1 - Emitir ticket Entrada          ==");
+			System.out.println("==  2 - Validar ticket Saída           ==");
+			System.out.println("==  3 - Verificar tempo de permanencia ==");
+			System.out.println("==  4 - finalizar Programa             ==");
+			System.out.println("=========================================\n");
 			
 			opcao = Integer.parseInt(scanner.nextLine());
 			
@@ -48,26 +49,22 @@ public class Main {
 				    
 				    // Envia o objeto atualizado para o DAO salvar no banco de dados
 				    veiculodao.registrarSaida(veiculo1);
-				   // veiculodao.returnarPermanencia(veiculo1.getSaida());
+				    
+				    veiculodao.RegistarIntervaloDB(placaSaida);
+				    
 				    
 				} else {
 				    System.out.println("Veículo não encontrado.");
 				}
 				break;
+				
 			case 3:
-				System.out.println("Programa finalizado com Sucesso !!");
+				System.out.println("Retornar permanencia !!");
 				System.out.println("Informe a placa do seu veículo: ");
 				String placaSaidaa = scanner.nextLine();
 				System.out.println("Placa digitada: " + placaSaidaa);
 				
 				Veiculo veiculo2 = veiculodao.retornarPermanencia(placaSaidaa);
-				/*
-				System.out.println(veiculo2.getSaida());
-				
-				System.out.println(veiculo2.getEntrada());
-				*/
-				
-		
 				break;
 			
 			default:
