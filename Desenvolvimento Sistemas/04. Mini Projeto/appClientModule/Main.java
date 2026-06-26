@@ -13,13 +13,14 @@ public class Main {
 		System.out.println("***** Bem vindo ao estacionamento JS *****");
 		int opcao = 0;
 		
-		while (opcao != 3) {
+		while (opcao != 4) {
 			System.out.println("\n=============== MENU ====================");
 			System.out.println("==  1 - Emitir ticket Entrada          ==");
 			System.out.println("==  2 - Validar ticket Saída           ==");
 			System.out.println("==  3 - Verificar tempo de permanencia ==");
 			System.out.println("==  4 - finalizar Programa             ==");
 			System.out.println("=========================================\n");
+			System.out.println("Informe a opção desejada: ");
 			
 			opcao = Integer.parseInt(scanner.nextLine());
 			
@@ -40,7 +41,6 @@ public class Main {
 			case 2:
 				System.out.println("Informe a placa do seu veículo: ");
 				String placaSaida = scanner.nextLine();
-				System.out.println("Placa digitada: " + placaSaida);
 
 				Veiculo veiculo1 = veiculodao.buscarPorPlaca(placaSaida);
 
@@ -64,7 +64,7 @@ public class Main {
 				String placaSaidaa = scanner.nextLine();
 				System.out.println("Placa digitada: " + placaSaidaa);
 				
-				Veiculo veiculo2 = veiculodao.retornarPermanencia(placaSaidaa);
+				veiculodao.retornarPermanencia(placaSaidaa);
 				break;
 			
 			default:

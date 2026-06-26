@@ -55,7 +55,7 @@ public class VeiculoDAO {
 			
 			stmt.execute();
 			
-			System.out.println("Veículo cadastrado com sucesso!");
+			System.out.println("Veículo: " + veiculo.getPlaca() + ", cadastrado com sucesso!");
 			
 		} catch (Exception e) {
 			// TODO: handle exception
@@ -89,7 +89,7 @@ public class VeiculoDAO {
 	
 	public void registrarSaida(Veiculo veiculo) {
 
-	    String sql = "UPDATE Veiculo SET saida = ? WHERE placa = ?";
+	    String sql = "UPDATE Veiculo SET saida = ? WHERE placa = ? AND saida IS NULL";
 
 	    try (
 	        Connection conn = ConectFactory.getConnection();
@@ -102,7 +102,7 @@ public class VeiculoDAO {
 	        int linhas = stmt.executeUpdate();
 
 	        if (linhas > 0) {
-	            System.out.println("Saída registrada com sucesso!");
+	            System.out.println("");
 	        } else {
 	            System.out.println("Veículo não encontrado.");
 	        }
@@ -159,7 +159,7 @@ public class VeiculoDAO {
 				+ "    , ENTRADA"
 				+ "	, SAIDA"
 				+ "    , TEMPO"
-				+ "    , HOUR(TEMPO) + (MINUTE(TEMPO) / 60) + (SECOND(TEMPO) / 360) AS TEMPO_HORA"
+				+ "    , HOUR(TEMPO) + (MINUTE(TEMPO) / 60) + (SECOND(TEMPO) / 3600) AS TEMPO_HORA"
 				+ "    , (HOUR(TEMPO) * 60) + MINUTE(TEMPO) + (SECOND(TEMPO) / 60) AS TEMPO_MINUTO"
 				+ "    , (SELECT MAX(VALOR_HORA) FROM PRECO_HORA) AS VALOR_HORA"
 				+ " FROM ("
@@ -207,7 +207,24 @@ public class VeiculoDAO {
 		        int linhas = stmt.executeUpdate();
 
 		        if (linhas > 0) {
-		            System.out.println("tempo e valor registrada com sucesso!");
+		            
+		        	LocalDateTime dataInicio = rs.getTimestamp("entrada").toLocalDateTime();
+	                LocalDateTime dataFim = rs.getTimestamp("saida").toLocalDateTime();
+					
+	                Duration intervalo = Duration.between(dataInicio, dataFim);
+	                long horas = intervalo.toHours();
+	                long minutos = intervalo.toMinutes() % 60;
+	                
+	                // System.out.println("Intervalo: " + horas + " horas e " + minutos + " minutos.");
+	                
+	                System.out.println("================= Resumo =====================");
+	                System.out.println("Placa informada: " + veiculo.getPlaca());
+	                System.out.println("Entrada: " + veiculo.getEntrada());
+	                System.out.println("Saída: " + veiculo.getSaida());
+	                System.out.println("Permanência: " + horas + " horas e " + minutos + " minutos.");
+	                System.out.println("Valor a pagar: R$" + veiculo.getValor());
+	                System.out.println("=============================================");
+	                
 		        } else {
 		            System.out.println("Veículo não encontrado.");
 		        }
